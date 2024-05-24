@@ -11,7 +11,7 @@
     <title>Title</title>
 </head>
 <body>
-    <h1>这是我的第一个maven工程!</h1>
-    <a href="${pageContext.request.contextPath}/test?methodname=login">登录</a>
+    <h1>工大圈子</h1>
+    <a href="${pageContext.request.contextPath}/api/login">登录</a>
 </body>
 </html>
