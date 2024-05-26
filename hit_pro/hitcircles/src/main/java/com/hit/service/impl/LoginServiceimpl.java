@@ -26,4 +26,21 @@ public class LoginServiceimpl implements LoginService {
             return object.toString();
         }
     }
+
+    @Override
+    public String register(String username, String password) {
+        int ifinsert = loginDao.register(username,password);
+        if(ifinsert==0){
+            JSONObject object = new JSONObject();
+            object.put("code",1);
+            object.put("message","用户名被占用，请更换其他用户名！");
+            return object.toString();
+        }
+        else{
+            JSONObject object = new JSONObject();
+            object.put("code",0);
+            object.put("message","注册成功！");
+            return object.toString();
+        }
+    }
 }

@@ -4,4 +4,5 @@ package com.hit.dao;
  */
 public interface LoginDao {
     public int login(String username, String password);
+    public int register(String username,String password);
 }

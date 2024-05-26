@@ -8,4 +8,5 @@ import com.hit.dao.LoginDao;
 public interface LoginService {
 
     public String login(String username, String password);
+    public String register(String username, String password);
 }
