@@ -31,59 +31,105 @@ public class ArticleServiceimpl implements ArticleService {
     @Override
     public String get_all_articles(int user_id, String ser_name) {
         List<JSONObject> result = art.get_all_articles(user_id,ser_name);
+        Map<String, Object> object = new LinkedHashMap<>();
         if(result==null){
-            JSONObject object = new JSONObject();
-            object.put("code",1);
-            object.put("message","未找到该用户！");
-            return object.toString();
+            object.put("code", 1);
+            object.put("message", "未找到该用户！");
         }
         else{
-            /*
-            StringBuilder jsonArrayString = new StringBuilder();
-            jsonArrayString.append("[");
             int total = result.size();
-            for (int i = 0; i < result.size(); i++) {
-                jsonArrayString.append(result.get(i));
-                if (i < result.size() - 1) {
-                    jsonArrayString.append(",");
-                }
-            }
-            jsonArrayString.append("]");
-
-
-            */
-
-            /*
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonString = null;
-            try {
-                // 模拟添加pub_date字段
-                //result.put("pub_date", java.time.LocalDateTime.now());
-                objectMapper.registerModule(new JavaTimeModule()); // 注册JavaTimeModule
-                jsonString = objectMapper.writeValueAsString(result);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-             */
-
-            int total = result.size();
-            Map<String, Object> object = new LinkedHashMap<>();
             object.put("status", 0);
             object.put("message", "获取文章列表成功！");
             object.put("total", total);
             object.put("data", result);
+        }
 
-            ObjectMapper objm = new ObjectMapper();
-            String json = null;
-            try {
-                objm.registerModule(new JavaTimeModule()); // 注册JavaTimeModule
-                json = objm.writeValueAsString(object);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+        ObjectMapper objm = new ObjectMapper();
+        String json = null;
+        try {
+            objm.registerModule(new JavaTimeModule()); // 注册JavaTimeModule
+            json = objm.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
             return json;
+    }
 
+    @Override
+    public String get_an_article(int article_id) {
+        JSONObject result = art.get_an_article(article_id);
+        Map<String, Object> object = new LinkedHashMap<>();
+
+        if(result==null){
+            object.put("code", 1);
+            object.put("message", "未找到该文章！");
+        }
+        else{
+            object.put("status", 0);
+            object.put("message", "获取文章成功！");
+            object.put("data", result);
+        }
+
+        ObjectMapper objm = new ObjectMapper();
+        String json = null;
+        try {
+            objm.registerModule(new JavaTimeModule()); // 注册JavaTimeModule
+            json = objm.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    @Override
+    public String pub_article(int user_id, int from_id, String content) {
+        int result = art.pub_article(user_id,from_id,content);
+        if(result==0){
+            JSONObject object = new JSONObject();
+            object.put("code",0);
+            object.put("message","发布成功！");
+            return object.toString();
+        }
+        else{
+            JSONObject object = new JSONObject();
+            object.put("code",1);
+            object.put("message","发布失败！");
+            return object.toString();
         }
     }
+
+    @Override
+    public String del_article(int user_id, int article_id) {
+        int result = art.del_article(user_id, article_id);
+        if(result==0){
+            JSONObject object = new JSONObject();
+            object.put("code",0);
+            object.put("message","删除文章成功！");
+            return object.toString();
+        }
+        else{
+            JSONObject object = new JSONObject();
+            object.put("code",1);
+            object.put("message","身份认证失败！");
+            return object.toString();
+        }
+    }
+
+    @Override
+    public String edit_article(int user_id, int article_id, String content) {
+        int result = art.edit_article(user_id, article_id,content);
+        if(result==0){
+            JSONObject object = new JSONObject();
+            object.put("code",0);
+            object.put("message","修改文章成功！");
+            return object.toString();
+        }
+        else{
+            JSONObject object = new JSONObject();
+            object.put("code",1);
+            object.put("message","身份认证失败！");
+            return object.toString();
+        }
+    }
+
 }
