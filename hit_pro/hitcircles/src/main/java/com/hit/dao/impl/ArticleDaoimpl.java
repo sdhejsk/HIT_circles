@@ -25,16 +25,17 @@ public class ArticleDaoimpl implements ArticleDao {
         QueryRunner qr = new QueryRunner(DruidUtils.getDataSource());
         String sql = new String();
         Object[] param;
-        if(ser_name.equals("") || ser_name == null){
-            sql = "select article_id, from_id, article_base.user_id as user_id, username, avatar_url as avatar, article_content as content, pub_time as pub_date from article_base, user_follow, user_avatar, user_base where article_base.user_id = user_follow.friend_id and  user_follow.user_id = ? and "+
-                    "article_base.user_id = user_avatar.user_id and article_base.user_id = user_base.user_id";
-            param = new Object[]{user_id};
+        if(ser_name == null ||ser_name.equals("")){
+            sql = "select DISTINCT article_id, from_id, article_base.user_id as user_id, username, avatar_url as avatar, article_content as content, pub_time as pub_date " +
+                    "from article_base, user_follow, user_avatar, user_base where ((article_base.user_id = user_follow.friend_id and  user_follow.user_id = ?) or (article_base.user_id = ? )) and "+
+                    "article_base.user_id = user_avatar.user_id and article_base.user_id = user_base.user_id order by pub_date desc";
+            param = new Object[]{user_id, user_id};
         }
         else{
             String seru = "select user_id from user_base where username = ?";
-            String seru2 = "select user_base.user_id from user_base, user_follow where user_base.user_id = user_follow.friend_id and " +
-                    "user_follow.user_id = ? and username = ? ";
-            Object[] p2 = {user_id, ser_name};
+            String seru2 = "select DISTINCT user_base.user_id from user_base, user_follow where (user_base.user_id = user_follow.friend_id and " +
+                    "user_follow.user_id = ? and username = ?) or (user_base.user_id = ? and user_base.username = ? )";
+            Object[] p2 = {user_id, ser_name,user_id, ser_name};
             Object[] p = {ser_name};
             try {
                 if(qr.query(seru,p,new ScalarHandler<>())==null){
@@ -59,9 +60,9 @@ public class ArticleDaoimpl implements ArticleDao {
                 e.printStackTrace();
                 return null;
             }
-            sql = "select article_id, from_id, article_base.user_id as user_id, username, avatar_url as avatar, article_content as content, pub_time as pub_date from article_base, user_follow, user_avatar, user_base where article_base.user_id = user_follow.friend_id and  user_follow.user_id = ? and "+
-                    "article_base.user_id = user_avatar.user_id and article_base.user_id = user_base.user_id and user_base.username = ?";
-            param = new Object[]{user_id,ser_name};
+            sql = "select DISTINCT article_id, from_id, article_base.user_id as user_id, username, avatar_url as avatar, article_content as content, pub_time as pub_date from article_base, user_avatar, user_base where "+
+                    "article_base.user_id = user_avatar.user_id and article_base.user_id = user_base.user_id and user_base.username = ? order by pub_date desc";
+            param = new Object[]{ser_name};
         }
         try {
             List<Object[]> results = qr.query(sql, new ArrayListHandler(), param);
@@ -160,6 +161,11 @@ public class ArticleDaoimpl implements ArticleDao {
         String sql = new String();
         try {
             Long count = qr.query("SELECT count(*) FROM article_base ", new ScalarHandler<>());
+            Long id = qr.query("select count(*) from article_base where article_id = ? ",count.intValue()+1,new ScalarHandler<>());
+            while(id>0){
+                count++;
+                id = qr.query("select count(*) from article_base where article_id = ? ",count.intValue()+1,new ScalarHandler<>());
+            }
             sql = "INSERT INTO article_base (article_id, user_id, from_id, pub_time, article_content)\n" +
                     "VALUES (?, ?, ?, ?, ?) ";
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -200,7 +206,7 @@ public class ArticleDaoimpl implements ArticleDao {
         try {
             Long ifadmin = qr.query("SELECT is_admin FROM user_base WHERE user_id = "+ user_id, new ScalarHandler<>());
             int pub_id = qr.query("SELECT user_id FROM article_base WHERE article_id = "+article_id, new ScalarHandler<>());
-            if(ifadmin==0 || pub_id!=user_id){//不是管理员或不是本人
+            if(pub_id!=user_id && ifadmin==0){//不是本人且不是管理员
                 return 1;
             }
             else{

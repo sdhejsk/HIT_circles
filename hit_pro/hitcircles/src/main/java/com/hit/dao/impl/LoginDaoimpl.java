@@ -37,9 +37,14 @@ public class LoginDaoimpl implements LoginDao{
             if(qr.query(sql, param, new ScalarHandler<>())==null){
                 try {
                     Long count = qr.query("SELECT count(*) FROM user_base ", new ScalarHandler<>());
+                    Long id = qr.query("select count(*) from user_base where user_id = ? ",count.intValue()+1,new ScalarHandler<>());
+                    while(id>0){
+                        count++;
+                        id = qr.query("select count(*) from user_base where user_id = ? ",count.intValue()+1,new ScalarHandler<>());
+                    }
                     String insert = "INSERT INTO user_base (user_id, username, password, is_admin)\n" +
                             "VALUES (?, ?, ?, 0) ";
-                    Object[] param2 = {(count == null) ? 1 : count.intValue()+1,username,password};
+                    Object[] param2 = {count.intValue()+1,username,password};
                     int result = qr.update(insert, param2);
                     return result;
                 } catch (Exception e) {

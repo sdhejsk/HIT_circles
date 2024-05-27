@@ -38,11 +38,15 @@ public class ArticleServlet extends HttpServlet {
 
         if(req.getContentType() != null && req.getContentType().startsWith("multipart/form-data")){//是一个multipart/form-data请求
             // 从请求中获取参数
-
-            String from = req.getParameter("from");
+            System.out.println("form-data");
+            String from = req.getParameter("from_id");
             String content = req.getParameter("content");
-            String id = req.getParameter("id");
+            String id = req.getParameter("article_id");
+            System.out.println("from_id: "+from);
+            System.out.println("content: "+content);
+            System.out.println("id: "+id);
             if(from!=null) {//发布文章
+                System.out.println("发布文章");
                 int from_id = -1;
                 int user_id = Integer.parseInt(authorization);
                 if (from != null) {
@@ -55,6 +59,7 @@ public class ArticleServlet extends HttpServlet {
             }
             else if(id!=null){
                 if(content.equals("")){//删除文章
+                    System.out.println("删除文章");
                     int article_id = Integer.parseInt(id);
                     int user_id = Integer.parseInt(authorization);
                     ArticleService art = new ArticleServiceimpl();
@@ -62,12 +67,14 @@ public class ArticleServlet extends HttpServlet {
                     resp.getWriter().print(result);
                 }
                 else if(content!=null){//编辑文章
+                    System.out.println("编辑文章");
                     int article_id = Integer.parseInt(id);
                     int user_id = Integer.parseInt(authorization);
                     ArticleService art = new ArticleServiceimpl();
                     String result = art.edit_article(user_id,article_id,content);
                     resp.getWriter().print(result);
                 }
+                /*
                 else{//获取一篇文章
                     int article_id = Integer.parseInt(article_id_string);
                     ArticleService art = new ArticleServiceimpl();
@@ -77,29 +84,31 @@ public class ArticleServlet extends HttpServlet {
                     resp.getWriter().print(result);
                     System.out.println("返回成功!");
                 }
+                */
             }
         }
         else if(article_id_string!=null){//获取一篇文章
+            System.out.println("查找一篇文章");
             int article_id = Integer.parseInt(article_id_string);
             ArticleService art = new ArticleServiceimpl();
-            System.out.println("开始查找文章");
+            //System.out.println("开始查找文章");
             String result = art.get_an_article(article_id);
-            System.out.println("查找文章结束");
+            //System.out.println("查找文章结束");
             resp.getWriter().print(result);
-            System.out.println("返回成功!");
+            //System.out.println("返回成功!");
         }
         else{//获取全部文章
             // 获取Header参数
-            System.out.println("获取参数成功！");
+            System.out.println("获取全部文章");
             int user_id;
             user_id = Integer.parseInt(authorization);
 
             ArticleService art = new ArticleServiceimpl();
-            System.out.println("开始查找文章");
+            //System.out.println("开始查找文章");
             String result = art.get_all_articles(user_id, ser_name);
-            System.out.println("查找文章结束");
+            //System.out.println("查找文章结束");
             resp.getWriter().print(result);
-            System.out.println("返回成功!");
+            //System.out.println("返回成功!");
         }
     }
 
