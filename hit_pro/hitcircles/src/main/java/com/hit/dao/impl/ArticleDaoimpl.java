@@ -25,17 +25,35 @@ public class ArticleDaoimpl implements ArticleDao {
         QueryRunner qr = new QueryRunner(DruidUtils.getDataSource());
         String sql = new String();
         Object[] param;
-        if(ser_name==null){
+        if(ser_name.equals("") || ser_name == null){
             sql = "select article_id, from_id, article_base.user_id as user_id, username, avatar_url as avatar, article_content as content, pub_time as pub_date from article_base, user_follow, user_avatar, user_base where article_base.user_id = user_follow.friend_id and  user_follow.user_id = ? and "+
                     "article_base.user_id = user_avatar.user_id and article_base.user_id = user_base.user_id";
             param = new Object[]{user_id};
         }
         else{
             String seru = "select user_id from user_base where username = ?";
+            String seru2 = "select user_base.user_id from user_base, user_follow where user_base.user_id = user_follow.friend_id and " +
+                    "user_follow.user_id = ? and username = ? ";
+            Object[] p2 = {user_id, ser_name};
             Object[] p = {ser_name};
             try {
                 if(qr.query(seru,p,new ScalarHandler<>())==null){
-                    return null;
+                    List<JSONObject> extendedResults = new ArrayList<>();
+                    Map<String, Object> resultMap = new LinkedHashMap<>();
+                    resultMap.put("null", 1);
+                    JSONObject nulljson = new JSONObject(resultMap);
+                    extendedResults.add(nulljson);
+                    //extendedResults.add(nulljson);
+                    return extendedResults;
+                }
+                else if(qr.query(seru2, p2, new ScalarHandler<>())==null){
+                    List<JSONObject> extendedResults = new ArrayList<>();
+                    Map<String, Object> resultMap = new LinkedHashMap<>();
+                    resultMap.put("not_friend", 1);
+                    JSONObject nulljson = new JSONObject(resultMap);
+                    extendedResults.add(nulljson);
+                    //extendedResults.add(nulljson);
+                    return extendedResults;
                 }
             } catch (Exception e) {
                 e.printStackTrace();

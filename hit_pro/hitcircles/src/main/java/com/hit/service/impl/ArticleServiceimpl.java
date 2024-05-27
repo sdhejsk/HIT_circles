@@ -32,13 +32,24 @@ public class ArticleServiceimpl implements ArticleService {
     public String get_all_articles(int user_id, String ser_name) {
         List<JSONObject> result = art.get_all_articles(user_id,ser_name);
         Map<String, Object> object = new LinkedHashMap<>();
-        if(result==null){
+        if(result==null || result.isEmpty()){
+            object.put("code", 0);
+            object.put("message", "获取文章列表成功！");
+            object.put("total", 0);
+            List<JSONObject> res = new ArrayList<>();
+            object.put("data", res);
+        }
+        else if(result.get(0).containsKey("null")){
             object.put("code", 1);
             object.put("message", "未找到该用户！");
         }
+        else if(result.get(0).containsKey("not_friend")){
+            object.put("code", 1);
+            object.put("message", "您未关注该用户！");
+        }
         else{
             int total = result.size();
-            object.put("status", 0);
+            object.put("code", 0);
             object.put("message", "获取文章列表成功！");
             object.put("total", total);
             object.put("data", result);
@@ -65,7 +76,7 @@ public class ArticleServiceimpl implements ArticleService {
             object.put("message", "未找到该文章！");
         }
         else{
-            object.put("status", 0);
+            object.put("code", 0);
             object.put("message", "获取文章成功！");
             object.put("data", result);
         }
