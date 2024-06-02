@@ -30,13 +30,14 @@ public class ArticleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+
         System.out.println("即将获取参数");
         // 获取Query参数
         String ser_name = req.getParameter("username");
         String article_id_string = req.getParameter("article_id");
         String authorization = req.getHeader("Authorization");
 
-        if(req.getContentType() != null && req.getContentType().startsWith("multipart/form-data")){//是一个multipart/form-data请求
+        if(req.getContentType() != null &&req.getContentType().startsWith("multipart/form-data")){//是一个multipart/form-data请求
             // 从请求中获取参数
             System.out.println("form-data");
             String from = req.getParameter("from_id");
