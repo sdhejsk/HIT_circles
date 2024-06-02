@@ -45,8 +45,12 @@ public class LoginDaoimpl implements LoginDao{
                     String insert = "INSERT INTO user_base (user_id, username, password, is_admin)\n" +
                             "VALUES (?, ?, ?, 0) ";
                     Object[] param2 = {count.intValue()+1,username,password};
+                    String insert_avatar = "INSERT INTO user_avatar (user_id, avatar_url)\n" +
+                    "VALUES (?, ?) ";
+                    Object[] param3 = {count.intValue()+1,"/user/avatar.png"};
                     int result = qr.update(insert, param2);
-                    return result;
+                    int result2 = qr.update(insert_avatar, param3);
+                    return result & result2;
                 } catch (Exception e) {
                     e.printStackTrace();
                     return 0;

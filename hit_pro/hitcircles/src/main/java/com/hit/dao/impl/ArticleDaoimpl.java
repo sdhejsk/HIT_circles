@@ -184,7 +184,8 @@ public class ArticleDaoimpl implements ArticleDao {
         String sql = new String();
         try {
             Long ifadmin = qr.query("SELECT is_admin FROM user_base WHERE user_id = "+ user_id, new ScalarHandler<>());
-            if(ifadmin==0){//不是管理员
+            int author = qr.query("SELECT user_id FROM article_base WHERE article_id = "+article_id, new ScalarHandler<>());
+            if(ifadmin==0 && author!=user_id){//不是管理员且不是作者
                 return 1;
             }
             else{
