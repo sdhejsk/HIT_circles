@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/hit_pro.iml" filepath="$PROJECT_DIR$/hit_pro.iml" />
-      <module fileurl="file://$PROJECT_DIR$/hitcircles.iml" filepath="$PROJECT_DIR$/hitcircles.iml" />
     </modules>
   </component>
 </project>
