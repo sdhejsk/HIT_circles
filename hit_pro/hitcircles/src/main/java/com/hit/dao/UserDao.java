@@ -1,5 +1,7 @@
 package com.hit.dao;
 
+import com.hit.pojo.UserInfoResponse;
+
 public interface UserDao {
-    public int update_avatar();
+    UserInfoResponse getUserInfoById(int userId);
 }

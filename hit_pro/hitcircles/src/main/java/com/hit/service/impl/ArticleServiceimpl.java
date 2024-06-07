@@ -30,11 +30,6 @@ public class ArticleServiceimpl implements ArticleService {
     ArticleDao art = new ArticleDaoimpl();
     @Override
     public String get_all_articles(int user_id, String ser_name) {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         List<JSONObject> result = art.get_all_articles(user_id,ser_name);
         Map<String, Object> object = new LinkedHashMap<>();
         if(result==null || result.isEmpty()){
