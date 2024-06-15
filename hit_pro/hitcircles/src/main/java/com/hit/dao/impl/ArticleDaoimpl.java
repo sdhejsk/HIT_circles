@@ -80,6 +80,10 @@ public class ArticleDaoimpl implements ArticleDao {
                 String commentCountSql = "SELECT COUNT(*) FROM comment WHERE article_id = ?";
                 Long commentCount = qr.query(commentCountSql, new ScalarHandler<Long>(), articleId);
 
+                String sql_islike = "SELECT COUNT(*) FROM article_love WHERE article_id = ? and user_id = ? ";
+                Object[] para_islike = {row[0],user_id};
+                Long islike = qr.query(sql_islike, new ScalarHandler<Long>(), para_islike);
+
                 // Create a map for JSON serialization
                 Map<String, Object> resultMap = new LinkedHashMap<>();
                 resultMap.put("article_id", row[0]);
@@ -91,23 +95,13 @@ public class ArticleDaoimpl implements ArticleDao {
                 resultMap.put("pub_date", row[6]);
                 resultMap.put("like_num", likeCount.intValue());
                 resultMap.put("comment_num", commentCount.intValue());
+                if(islike>0)resultMap.put("is_like",1);
+                else resultMap.put("is_like",0);
 
                 JSONObject json = new JSONObject(resultMap);
                 extendedResults.add(json);
             }
 
-/*
-            // Convert the list of maps to a list of JSON strings
-            List<String> jsonResults = new ArrayList<>();
-            for (Map<String, Object> resultMap : extendedResults) {
-                // 模拟添加pub_date字段
-                resultMap.put("pub_date", java.time.LocalDateTime.now());
-                mapper.registerModule(new JavaTimeModule()); // 注册JavaTimeModule
-
-                String jsonString = mapper.writeValueAsString(resultMap);
-                jsonResults.add(jsonString);
-            }
-            */
             return extendedResults;
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,7 +110,7 @@ public class ArticleDaoimpl implements ArticleDao {
     }
 
     @Override
-    public JSONObject get_an_article(int article_id) {
+    public JSONObject get_an_article(int user_id, int article_id) {
         QueryRunner qr = new QueryRunner(DruidUtils.getDataSource());
         String sql = new String();
         Object[] param;
@@ -135,6 +129,10 @@ public class ArticleDaoimpl implements ArticleDao {
             String commentCountSql = "SELECT COUNT(*) FROM comment WHERE article_id = ?";
             Long commentCount = qr.query(commentCountSql, new ScalarHandler<Long>(), article_id);
 
+            String sql_islike = "SELECT COUNT(*) FROM article_love WHERE article_id = ? and user_id = ? ";
+            Object[] para_islike = {result[0],user_id};
+            Long islike = qr.query(sql_islike, new ScalarHandler<Long>(), para_islike);
+
             // Create a map for JSON serialization
             Map<String, Object> resultMap = new LinkedHashMap<>();
             resultMap.put("article_id", result[0]);
@@ -146,6 +144,8 @@ public class ArticleDaoimpl implements ArticleDao {
             resultMap.put("pub_date", result[6]);
             resultMap.put("like_num", likeCount.intValue());
             resultMap.put("comment_num", commentCount.intValue());
+            if(islike>0)resultMap.put("is_like",1);
+            else resultMap.put("is_like",0);
 
             JSONObject json = new JSONObject(resultMap);
             return json;

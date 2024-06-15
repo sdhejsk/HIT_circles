@@ -1,5 +1,5 @@
 package com.hit.service;
 
 public interface AvatarService {
-    String updateAvatar(String token, String avatarBase64);
+    public String updateAvatar(int user_id, String avatar);
 }

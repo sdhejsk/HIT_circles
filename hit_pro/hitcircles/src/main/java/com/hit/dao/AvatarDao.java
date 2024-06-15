@@ -1,5 +1,5 @@
 package com.hit.dao;
 
 public interface AvatarDao {
-    int updateAvatar(String token, String avatarBase64);
+    public int updateAvatar(int user_id, String avatar);
 }

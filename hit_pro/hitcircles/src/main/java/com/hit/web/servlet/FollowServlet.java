@@ -5,11 +5,12 @@ import com.hit.service.FollowService;
 import com.hit.service.LoginService;
 import com.hit.service.impl.FollowServiceimpl;
 import com.hit.service.impl.LoginServiceimpl;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +20,9 @@ import java.util.Map;
 public class FollowServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("utf-8");
+        resp.setCharacterEncoding("UTF-8");
+
         System.out.println("更改关注");
         StringBuilder sb = new StringBuilder();
         try(BufferedReader reader = req.getReader()) {

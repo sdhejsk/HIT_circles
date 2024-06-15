@@ -3,11 +3,12 @@ package com.hit.web.servlet;
 import com.hit.pojo.UserInfoResponse;
 import com.hit.service.UserService;
 import com.hit.service.impl.UserServiceImpl;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
@@ -16,6 +17,9 @@ public class UserServlet extends HttpServlet {
     private final UserService userService = new UserServiceImpl();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("UTF-8");
+
         // 获取 Authorization 头部信息
         String authorizationHeader = request.getHeader("Authorization");
 
@@ -45,7 +49,7 @@ public class UserServlet extends HttpServlet {
 
     // 将 UserInfoResponse 对象转换为 JSON 字符串
     private String userInfoToJson(UserInfoResponse userInfo) {
-        return "{\"id\":" + userInfo.getId() + ",\"username\":\"" + userInfo.getUsername() + "\",\"avatar\":\"" + userInfo.getAvatar() + "\"}";
+        return "{\"id\":" + userInfo.getId() + ",\"username\":\"" + userInfo.getUsername() + "\",\"avatar\":\"" + userInfo.getAvatar() + "\",\"is_admin\":\"" + userInfo.getIs_admin() + "\"}";
     }
 
     // 发送错误响应

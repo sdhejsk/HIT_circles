@@ -2,17 +2,12 @@ package com.hit.web.servlet;
 
 import com.hit.service.ArticleService;
 import com.hit.service.impl.ArticleServiceimpl;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-//import javax.servlet.ServletException;
-//import javax.servlet.annotation.WebServlet;
-//import javax.servlet.http.HttpServlet;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -30,6 +25,8 @@ public class ArticleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        req.setCharacterEncoding("utf-8");
+        resp.setCharacterEncoding("UTF-8");
 
         System.out.println("即将获取参数");
         // 获取Query参数
@@ -91,9 +88,10 @@ public class ArticleServlet extends HttpServlet {
         else if(article_id_string!=null){//获取一篇文章
             System.out.println("查找一篇文章");
             int article_id = Integer.parseInt(article_id_string);
+            int user_id = Integer.parseInt(authorization);
             ArticleService art = new ArticleServiceimpl();
             //System.out.println("开始查找文章");
-            String result = art.get_an_article(article_id);
+            String result = art.get_an_article(user_id, article_id);
             //System.out.println("查找文章结束");
             resp.getWriter().print(result);
             //System.out.println("返回成功!");
@@ -107,7 +105,8 @@ public class ArticleServlet extends HttpServlet {
             ArticleService art = new ArticleServiceimpl();
             //System.out.println("开始查找文章");
             String result = art.get_all_articles(user_id, ser_name);
-            //System.out.println("查找文章结束");
+            System.out.println("查找文章结束: "+result);
+
             resp.getWriter().print(result);
             //System.out.println("返回成功!");
         }

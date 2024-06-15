@@ -12,4 +12,6 @@ public class UserInfoResponse implements Serializable {
     private String username;
     @JSONField(ordinal = 3)
     private String avatar;
+    @JSONField(ordinal = 4)
+    private int is_admin;
 }

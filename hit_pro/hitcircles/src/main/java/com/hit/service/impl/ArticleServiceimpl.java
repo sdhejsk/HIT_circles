@@ -67,8 +67,8 @@ public class ArticleServiceimpl implements ArticleService {
     }
 
     @Override
-    public String get_an_article(int article_id) {
-        JSONObject result = art.get_an_article(article_id);
+    public String get_an_article(int user_id, int article_id) {
+        JSONObject result = art.get_an_article(user_id, article_id);
         Map<String, Object> object = new LinkedHashMap<>();
 
         if(result==null){
