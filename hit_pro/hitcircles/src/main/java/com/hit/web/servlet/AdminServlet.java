@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(urlPatterns = {"/admin/user","/admin/listuser"})
+@WebServlet(urlPatterns = {"/admin/user","/admin/listuser", "/admin/article","/admin/listarticle"})
 @MultipartConfig
 public class AdminServlet extends HttpServlet {
     @Override
@@ -107,11 +107,57 @@ public class AdminServlet extends HttpServlet {
                 System.out.println("返回成功");
             }
         } else if (requestURI.equals("/hitcircles/admin/listuser")) {
+            System.out.println("获取用户列表");
             //处理/userlist请求
             int admin_id = Integer.parseInt(authorization);
             AdminService ad = new AdminServiceimpl();
             String result = ad.get_userlist(admin_id);
             resp.getWriter().print(result);
+            System.out.println("返回成功");
+        } else if (requestURI.startsWith("/hitcircles/admin/article")) {
+            if (req.getContentType() != null && req.getContentType().startsWith("multipart/form-data")) {
+                System.out.println("编辑文章");
+                // 编辑文章
+                String article_id_s = req.getParameter("article_id");
+                String content = req.getParameter("content");
+                String delete_s = req.getParameter("delete");
+                System.out.println("article_id_s: "+article_id_s);
+                System.out.println("content: "+content);
+                System.out.println("delete: "+delete_s);
+
+                int admin_id = Integer.parseInt(authorization);
+                int article_id = Integer.parseInt(article_id_s);
+                int delete = Integer.parseInt(delete_s);
+
+                AdminService ad = new AdminServiceimpl();
+                String result = ad.edit_article(admin_id,article_id,content,delete);
+                resp.getWriter().print(result);
+                System.out.println("返回成功！");
+
+            }
+            else{
+                //获取一个用户信息
+                System.out.println("获取一篇文章");
+                String article_id_s = req.getParameter("article_id");
+
+                int article_id = Integer.parseInt(article_id_s);
+                int admin_id = Integer.parseInt(authorization);
+
+                System.out.println("article_id: " + article_id);
+                System.out.println("admin_id: " + admin_id);
+                AdminService ad = new AdminServiceimpl();
+                String result = ad.get_articleinfo(article_id,admin_id);
+                System.out.println("result: " + result);
+                resp.getWriter().print(result);
+                System.out.println("返回成功");
+            }
+        } else if (requestURI.equals("/hitcircles/admin/listarticle")) {
+            System.out.println("获取文章列表");
+            //处理/articlelist请求
+            int admin_id = Integer.parseInt(authorization);
+            AdminService ad = new AdminServiceimpl();
+            String results = ad.get_articlelist(admin_id);
+            resp.getWriter().print(results);
             System.out.println("返回成功");
         }
     }
